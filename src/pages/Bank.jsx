@@ -84,10 +84,10 @@ export const Bank = (props) => {
 		});
 	}
 
-	// Sends GET request to CapitonOne API with the given URL
-	// Returns the response body
-	async function httpGetTransaction(url) {
-		return await axios.get(url)
+	// Sends POST request to CapitalOne API with the given URL and amount
+	// Supports both withdrawals and deposits since the request body is the same format for both
+	function httpPostTransaction(url, amount) {
+		axios.post(url, {})
 			.then(function(response) {
 				//// TODO ////
 			})
@@ -96,10 +96,10 @@ export const Bank = (props) => {
 			});
 	}
 
-	// Sends POST request to CapitalOne API with the given URL and amount
-	// Supports both withdrawals and deposits since the request body is the same format for both
-	function httpPostTransaction(url, amount) {
-		axios.post("", {})
+	// Sends GET request to CapitalOne API with the given URL
+	// Returns the response body
+	async function httpGetTransaction(url) {
+		return await axios.get(url)
 			.then(function(response) {
 				//// TODO ////
 			})
