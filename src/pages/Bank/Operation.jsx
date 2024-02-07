@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Flex, InputNumber, Button } from 'antd';
 
-export const Operation = (props) => {
+export default function Operation(props) {
     let [depositAmount, onDepositAmountChange] = useState(100);
     let [withdrawalAmount, onWithdrawalAmountChange] = useState(100);
 
@@ -18,33 +18,29 @@ export const Operation = (props) => {
     }
 
     return (
-        <>
-            <div className='operation-wrap'>
-                <Flex className='operation-item' vertical gap={10}>
-                    <Button type="primary" onClick={onGetTransactions}>Refresh</Button>
-                    <div>Make a deposit</div>
-                    <InputNumber
-                        className='input-number'
-                        defaultValue={depositAmount}
-                        formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                        parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                        onChange={onDepositAmountChange}
-                    />
-                    <Button type="primary" onClick={onSubmitDeposit}>Submit</Button>
-                </Flex>
-
-                <Flex vertical gap={10}>
-                    <div>Make a withdrawal</div>
-                    <InputNumber
-                        className='input-number'
-                        defaultValue={withdrawalAmount}
-                        formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                        parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                        onChange={onWithdrawalAmountChange}
-                    />
-                    <Button type="primary" onClick={onSubmitWithdrawal}>Submit</Button>
-                </Flex>
-            </div>
-        </>
+        <Flex vertical gap={35}>
+            <Flex vertical gap={10}>
+                <span>Deposit</span>
+                <InputNumber
+                    addonBefore="$"
+                    defaultValue={depositAmount}
+                    parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                    onChange={onDepositAmountChange}
+                    style={{ width: 'inherit' }}
+                />
+                <Button type="primary" onClick={onSubmitDeposit}>Submit</Button>
+            </Flex>
+            <Flex vertical gap={10}>
+                <span>Withdraw</span>
+                <InputNumber
+                    addonBefore="$"
+                    defaultValue={withdrawalAmount}
+                    parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                    onChange={onWithdrawalAmountChange}
+                    style={{ width: 'inherit' }}
+                />
+                <Button type="primary" onClick={onSubmitWithdrawal}>Submit</Button>
+            </Flex>
+        </Flex>
     );
 }

@@ -1,4 +1,3 @@
-import './App.css';
 import { Bank } from './pages/Bank';
 
 function App() {

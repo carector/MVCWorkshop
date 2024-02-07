@@ -1,11 +1,13 @@
+// Libraries
 import { useEffect, useState } from 'react';
-import { Flex, message, Card } from 'antd';
-import { RecordList } from './RecordList';
-import { Operation } from './Operation';
-
-import { ACCOUNT_ID, API_KEY, BASE_URL } from '../../defs';
-
 import axios from 'axios';
+import { message, Row, Col, Button, Card } from 'antd';
+import { IoMdRefresh } from "react-icons/io";
+
+// Native Imports
+import Table from './Table';
+import Operation from './Operation';
+import { ACCOUNT_ID, API_KEY, BASE_URL } from '../../defs';
 
 export const Bank = (props) => {
 	// Refresh table on page load
@@ -14,7 +16,7 @@ export const Bank = (props) => {
 	const [messageApi, contextHolder] = message.useMessage();
 
 	let [balance, setBalance] = useState(0);
-	let [accountNickname, setAccountNickname] = useState(0);
+	let [accountNickname, setAccountNickname] = useState('');
 	let [recordListData, setRecordListData] = useState([]);
 
 	// URLs for HTTP requests
@@ -47,7 +49,7 @@ export const Bank = (props) => {
 
 		// GET withdrawals for account
 		let withdrawals = await httpGetTransaction(withdrawalsUrl);
-
+		
 		if (accountData == undefined || deposits == undefined || withdrawals == undefined) {
 			operationFailed("Couldn't GET data from API");
 			return;
@@ -57,9 +59,12 @@ export const Bank = (props) => {
 		let transactions = deposits.concat(...withdrawals);
 		transactions.sort((a, b) => compareDates(a, b));
 
+		// Create nickname for account (example of nickname format: 'Checking ****9877')
+		const nickname = accountData.type + ' ****' + accountData.account_number.substring(accountData.account_number.length - 4);
+
 		// Update the information displayed in our table
 		setBalance(accountData.balance);
-		setAccountNickname(accountData.nickname);
+		setAccountNickname(nickname);
 		setRecordListData(transactions);
 	}
 
@@ -84,7 +89,7 @@ export const Bank = (props) => {
 		});
 	}
 
-	// Sends POST request to CapitalOne API with the given URL and amount
+	// Sends POST request to Nessie API with the given URL and amount
 	// Supports both withdrawals and deposits since the request body is the same format for both
 	function httpPostTransaction(url, amount) {
 		axios.post(url, {})
@@ -96,7 +101,7 @@ export const Bank = (props) => {
 			});
 	}
 
-	// Sends GET request to CapitalOne API with the given URL
+	// Sends GET request to Nessie API with the given URL
 	// Returns the response body
 	async function httpGetTransaction(url) {
 		return await axios.get(url)
@@ -111,18 +116,30 @@ export const Bank = (props) => {
 	return (
 		<>
 			{contextHolder}
-			<div className="page-wrap">
-				<Flex gap={40}>
-					<Card title={accountNickname} extra={"Balance: $" + balance}>
-						<RecordList data={recordListData} />
-					</Card>
+            <Row gutter={32} align="middle">
+                <Col span={1} />
+                <Col span={12}>
+                    <h1>Account Transaction Simulator</h1>
+                </Col>
+                <Col span={5}>
+                    <Button onClick={onGetTransactions} icon={<IoMdRefresh />} />
+                </Col>
+            </Row>
+            <Row gutter={32}>
+                <Col span={1} />
+                <Col span={12}>
+				<Card title={accountNickname} extra={"Balance: $" + balance}>
+					<Table data={recordListData} />
+				</Card>
+                </Col>
+                <Col span={3}>
 					<Operation
 						onDeposit={onPostDeposit}
 						onWithdrawal={onPostWithdrawal}
 						onGetTransactions={onGetTransactions}
 					/>
-				</Flex>
-			</div>
+                </Col>
+            </Row>
 		</>
 	);
 };
