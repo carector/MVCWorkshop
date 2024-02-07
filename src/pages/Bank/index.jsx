@@ -60,7 +60,7 @@ export const Bank = (props) => {
 		transactions.sort((a, b) => compareDates(a, b));
 
 		// Create nickname for account (example of nickname format: 'Checking ****9877')
-		const nickname = accountData.type + ' ****' + accountData.account_number.substring(accountData.account_number.length - 4);
+		const nickname = accountData.type + (accountData.account_number === undefined ? '' : ' ****' + accountData.account_number.substring(accountData.account_number.length - 4));
 
 		// Update the information displayed in our table
 		setBalance(accountData.balance);
