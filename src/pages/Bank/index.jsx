@@ -49,8 +49,8 @@ export const Bank = (props) => {
 
 		// GET withdrawals for account
 		let withdrawals = await httpGetTransaction(withdrawalsUrl);
-		
-		if (accountData == undefined || deposits == undefined || withdrawals == undefined) {
+
+		if (accountData === undefined || deposits === undefined || withdrawals === undefined) {
 			operationFailed("Couldn't GET data from API");
 			return;
 		}
